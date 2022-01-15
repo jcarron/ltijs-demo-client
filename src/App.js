@@ -5,32 +5,28 @@ import NamesAndRoles from './pages/namesandroles'
 import DeepLink from './pages/deeplink'
 import LandingPage from './pages/landingPage'
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 export default function App () {
   return (
     <Router>
-      <Switch>
-        <Route exact path='/'>
+      <Routes>
+        <Route exact path='/' element={<Home />}>
           <Home />
         </Route>
-        <Route path='/grades'>
+        <Route exact path='/grades' element={<Grades />}>
           <Grades />
         </Route>
-        <Route path='/namesandroles'>
+        <Route exact path='/namesandroles' element={<NamesAndRoles />}>
           <NamesAndRoles />
         </Route>
-        <Route path='/deeplink'>
+        <Route exact path='/deeplink' element={<DeepLink />}>
           <DeepLink />
         </Route>
-        <Route path='/nolti'>
+        <Route exact path='/nolti' element={<LandingPage />}>
           <LandingPage />
         </Route>
-      </Switch>
+      </Routes>
     </Router>
   )
 }

@@ -5,13 +5,9 @@ import App from './App'
 import * as serviceWorker from './serviceWorker'
 import { SnackbarProvider } from 'notistack'
 
-ReactDOM.render(<SnackbarProvider
-  maxSnack={3}
-  anchorOrigin={{
-    vertical: 'top',
-    horizontal: 'center'
-  }}
-                ><App />
+ReactDOM.render(<SnackbarProvider maxSnack={3} anchorOrigin={
+				{ vertical: 'top', horizontal: 'center' }
+	} ><App />
 </SnackbarProvider>, document.getElementById('root'))
 
 // If you want your app to work offline and load faster, you can change

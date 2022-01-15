@@ -1,25 +1,23 @@
-import React, { useState, useEffect } from 'react'
-import {
-  Link
-} from 'react-router-dom'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Grid from '@material-ui/core/Grid'
+import React, { useState, useEffect, useCallback } from 'react'
+import { Link } from 'react-router-dom'
+import CssBaseline from '@mui/material/CssBaseline'
+import Grid from '@mui/material/Grid'
 import Image from 'material-ui-image'
-import { makeStyles } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
+import makeStyles from '@mui/styles/makeStyles';
+import Container from '@mui/material/Container'
 
-import Fab from '@material-ui/core/Fab'
-import GradeIcon from '@material-ui/icons/Grade'
-import PersonIcon from '@material-ui/icons/Person'
-import Typography from '@material-ui/core/Typography'
-import Tooltip from '@material-ui/core/Tooltip'
+import Fab from '@mui/material/Fab'
+import GradeIcon from '@mui/icons-material/Grade'
+import PersonIcon from '@mui/icons-material/Person'
+import Typography from '@mui/material/Typography'
+import Tooltip from '@mui/material/Tooltip'
 
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
-import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
 import 'animate.css'
 import ky from 'ky'
 
@@ -82,9 +80,9 @@ export default function App () {
   const { enqueueSnackbar } = useSnackbar()
   const [info, setInfo] = useState()
 
-  const errorPrompt = async (message) => {
+  const errorPrompt = useCallback(async (message) => {
     enqueueSnackbar(message, { variant: 'error' })
-  }
+  }, [])
 
   const getLtik = () => {
     const searchParams = new URLSearchParams(window.location.search)
@@ -93,10 +91,10 @@ export default function App () {
     return ltik
   }
 
-  const ltijs = async () => {
+  const ltijs = useCallback(async () => {
     const win = window.open('https://cvmcosta.me/ltijs', '_blank')
     win.focus()
-  }
+  },[])
 
   useEffect(() => {
     const getInfo = async () => {
@@ -109,7 +107,7 @@ export default function App () {
       }
     }
     getInfo()
-  }, [])
+  }, [errorPrompt])
 
   return (
     <Container component='main' maxWidth='sm'>
@@ -118,12 +116,7 @@ export default function App () {
 
         <Grid container className={classes.logo}>
           <Grid item xs className={classes.logo1 + ' blank'}>
-            <Image
-              className={classes.logo}
-              src='https://raw.githubusercontent.com/Cvmcosta/ltijs/master/docs/logo-300.svg'
-              onClick={ltijs}
-              disableSpinner
-            />
+            <Image className={classes.logo} src='https://raw.githubusercontent.com/Cvmcosta/ltijs/master/docs/logo-300.svg' onClick={ltijs} disableSpinner />
           </Grid>
         </Grid>
         {info ? [

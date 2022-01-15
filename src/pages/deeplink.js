@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Grid from '@material-ui/core/Grid'
-import { makeStyles } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
+import React, { useState, useEffect, useCallback } from 'react'
+import CssBaseline from '@mui/material/CssBaseline'
+import Grid from '@mui/material/Grid'
+import { makeStyles } from '@mui/material/styles'
+import Container from '@mui/material/Container'
 
-import MUIDataTable from 'mui-datatables'
-import Fab from '@material-ui/core/Fab'
+import Fab from '@mui/material/Fab'
 import ky from 'ky'
-import NavigationIcon from '@material-ui/icons/Navigation'
+import NavigationIcon from '@mui/icons-material/Navigation'
 import $ from 'jquery'
 
 import { useSnackbar } from 'notistack'
@@ -50,9 +49,9 @@ const useStyles = makeStyles(theme => ({
 export default function App () {
   const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
-  const [resource, setResource] = useState(false)
+//  const [resource, setResource] = useState(false)
   const [dataset, setDataset] = useState([])
-  const [selected, setSelected] = useState([])
+//  const [selected, setSelected] = useState([])
 
   const getLtik = () => {
     const searchParams = new URLSearchParams(window.location.search)
@@ -61,9 +60,9 @@ export default function App () {
     return ltik
   }
 
-  const errorPrompt = async (message) => {
+  const errorPrompt = useCallback(async (message) => {
     enqueueSnackbar(message, { variant: 'error' })
-  }
+  }, [])
 
   // Retrieves resource dataset
   useEffect(() => {
@@ -77,16 +76,17 @@ export default function App () {
       }
     }
     fetchResources()
-  }, [])
+  }, [errorPrompt])
 
   // Submits resource to deep linking endpoint
   const submit = async () => {
     try {
-      if (resource === false) {
-        errorPrompt('Please select a resource.')
-        return
-      }
-      const form = await ky.post('/deeplink', { credentials: 'include', json: dataset[resource], headers: { Authorization: 'Bearer ' + getLtik() } }).text()
+//      if (resource === false) {
+//        errorPrompt('Please select a resource.')
+//        return
+//      }
+//      const form = await ky.post('/deeplink', { credentials: 'include', json: dataset[resource], headers: { Authorization: 'Bearer ' + getLtik() } }).text()
+      const form = await ky.post('/deeplink', { credentials: 'include', headers: { Authorization: 'Bearer ' + getLtik() } }).text()
       $('body').append(form)
     } catch (err) {
       console.log(err)
@@ -95,46 +95,67 @@ export default function App () {
   }
 
   // Configuring data table
-  const columns = [
-    {
-      name: 'name',
-      label: 'Name'
-    },
-    {
-      name: 'value',
-      label: 'Value'
-    }
-  ]
+//  const columns = [
+//    {
+//      name: 'name',
+//      label: 'Name'
+//    },
+//    {
+//      name: 'value',
+//      label: 'Value'
+//    }
+//  ]
+//
+//  const options = {
+//    filterType: 'checkbox',
+//    selectableRows: 'single',
+//    disableToolbarSelect: true,
+//    download: false,
+//    print: false,
+//    searchOpen: false,
+//    search: false,
+//    viewColumns: false,
+//    filter: false,
+//    selectableRowsOnClick: true,
+//    onRowsSelect: (selResource, allRows) => { setResource(selResource[0].dataIndex); setSelected(allRows.map(row => row.dataIndex)) },
+//    rowsSelected: selected,
+//    rowsPerPage: 5,
+//    responsive: 'scrollFullHeight'
+//  }
 
-  const options = {
-    filterType: 'checkbox',
-    selectableRows: 'single',
-    disableToolbarSelect: true,
-    download: false,
-    print: false,
-    searchOpen: false,
-    search: false,
-    viewColumns: false,
-    filter: false,
-    selectableRowsOnClick: true,
-    onRowsSelect: (selResource, allRows) => { setResource(selResource[0].dataIndex); setSelected(allRows.map(row => row.dataIndex)) },
-    rowsSelected: selected,
-    rowsPerPage: 5,
-    responsive: 'scrollFullHeight'
-  }
+//  return (
+//    <Container component='main' maxWidth='lg'>
+//      <CssBaseline />
+//      <div className={classes.paper}>
+//        <Grid container>
+//          <Grid item xs={12} className={classes.table}>
+//            <MUIDataTable
+//              title='Example custom resources:'
+//              data={dataset}
+//              columns={columns}
+//              options={options}
+//            />
+//            <Grid item xs className={classes.btnDiv}>
+//              <Fab variant='extended' color='primary' aria-label='add' className={classes.fab} onClick={submit}>
+//                <NavigationIcon className={classes.extendedIcon} />
+//                Submit
+//              </Fab>
+//            </Grid>
+//          </Grid>
+//        </Grid>
+//      </div>
+//      {/* <Box mt={8}>
+//        <Copyright />
+//      </Box> */}
+//    </Container>
+//  )
 
-  return (
+    return (
     <Container component='main' maxWidth='lg'>
       <CssBaseline />
       <div className={classes.paper}>
         <Grid container>
           <Grid item xs={12} className={classes.table}>
-            <MUIDataTable
-              title='Example custom resources:'
-              data={dataset}
-              columns={columns}
-              options={options}
-            />
             <Grid item xs className={classes.btnDiv}>
               <Fab variant='extended' color='primary' aria-label='add' className={classes.fab} onClick={submit}>
                 <NavigationIcon className={classes.extendedIcon} />

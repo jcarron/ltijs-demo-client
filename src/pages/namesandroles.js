@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import {
   Link
 } from 'react-router-dom'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Grid from '@material-ui/core/Grid'
-import { makeStyles } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
+import CssBaseline from '@mui/material/CssBaseline'
+import Grid from '@mui/material/Grid'
+import makeStyles from '@mui/styles/makeStyles';
+import Container from '@mui/material/Container'
 
 import MUIDataTable from 'mui-datatables'
-import HomeIcon from '@material-ui/icons/Home'
-import Fab from '@material-ui/core/Fab'
+import HomeIcon from '@mui/icons-material/Home'
+import Fab from '@mui/material/Fab'
 import ky from 'ky'
 
 import { useSnackbar } from 'notistack'
@@ -67,9 +67,9 @@ export default function App () {
     return ltik
   }
 
-  const errorPrompt = async (message) => {
+  const errorPrompt = useCallback(async (message, enqueueSnackbar=enqueueSnackbar) => {
     enqueueSnackbar(message, { variant: 'error' })
-  }
+  }, [])
 
   // Retrieves resource dataset
   useEffect(() => {
@@ -84,7 +84,7 @@ export default function App () {
       }
     }
     fetchMembers()
-  }, [])
+  }, [errorPrompt])
 
   // Configuring data table
   const columns = [
