@@ -1,9 +1,9 @@
 import React from 'react'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Grid from '@material-ui/core/Grid'
+import CssBaseline from '@mui/material/CssBaseline'
+import Grid from '@mui/material/Grid'
 import Image from 'material-ui-image'
-import { makeStyles } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
+import makeStyles from '@mui/styles/makeStyles';
+import Container from '@mui/material/Container'
 
 const useStyles = makeStyles(theme => ({
   '@global': {

@@ -1,16 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import {
-  Link
-} from 'react-router-dom'
-import CssBaseline from '@mui/material/CssBaseline'
-import Grid from '@mui/material/Grid'
-import makeStyles from '@mui/styles/makeStyles';
-import Container from '@mui/material/Container'
+import React, { useState, useEffect } from 'react'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import Grid from '@material-ui/core/Grid'
+import { makeStyles } from '@material-ui/core/styles'
+import Container from '@material-ui/core/Container'
 
 import MUIDataTable from 'mui-datatables'
-import HomeIcon from '@mui/icons-material/Home'
-import Fab from '@mui/material/Fab'
+import Fab from '@material-ui/core/Fab'
 import ky from 'ky'
+import NavigationIcon from '@material-ui/icons/Navigation'
+import $ from 'jquery'
 
 import { useSnackbar } from 'notistack'
 
@@ -46,19 +44,15 @@ const useStyles = makeStyles(theme => ({
   },
   table: {
     marginTop: '10%'
-  },
-  home: {
-    backgroundColor: '#013b6c',
-    position: 'fixed',
-    bottom: '1vh',
-    left: '1vh'
   }
 }))
 
 export default function App () {
   const classes = useStyles()
   const { enqueueSnackbar } = useSnackbar()
-  const [dataset, setDataset] = useState()
+  const [resource, setResource] = useState(false)
+  const [dataset, setDataset] = useState([])
+  const [selected, setSelected] = useState([])
 
   const getLtik = () => {
     const searchParams = new URLSearchParams(window.location.search)
@@ -67,24 +61,38 @@ export default function App () {
     return ltik
   }
 
-  const errorPrompt = useCallback(async (message, enqueueSnackbar=enqueueSnackbar) => {
+  const errorPrompt = async (message) => {
     enqueueSnackbar(message, { variant: 'error' })
-  }, [])
+  }
 
   // Retrieves resource dataset
   useEffect(() => {
-    const fetchMembers = async () => {
+    const fetchResources = async () => {
       try {
-        const members = await ky.get('/members', { credentials: 'include', headers: { Authorization: 'Bearer ' + getLtik() } }).json()
-        console.log(members)
-        setDataset(members)
+        const resources = await ky.get('/resources', { credentials: 'include', headers: { Authorization: 'Bearer ' + getLtik() } }).json()
+        setDataset(resources)
       } catch (err) {
         console.log(err)
-        errorPrompt('Failed retrieving members! ' + err)
+        errorPrompt('Failed retrieving example resources! ' + err)
       }
     }
-    fetchMembers()
-  }, [errorPrompt])
+    fetchResources()
+  }, [])
+
+  // Submits resource to deep linking endpoint
+  const submit = async () => {
+    try {
+      if (resource === false) {
+        errorPrompt('Please select a resource.')
+        return
+      }
+      const form = await ky.post('/deeplink', { credentials: 'include', json: dataset[resource], headers: { Authorization: 'Bearer ' + getLtik() } }).text()
+      $('body').append(form)
+    } catch (err) {
+      console.log(err)
+      errorPrompt('Failed creating deep link! ' + err)
+    }
+  }
 
   // Configuring data table
   const columns = [
@@ -93,21 +101,24 @@ export default function App () {
       label: 'Name'
     },
     {
-      name: 'roles',
-      label: 'Role'
+      name: 'value',
+      label: 'Value'
     }
   ]
 
   const options = {
     filterType: 'checkbox',
-    selectableRows: 'none',
+    selectableRows: 'single',
     disableToolbarSelect: true,
     download: false,
     print: false,
     searchOpen: false,
+    search: false,
     viewColumns: false,
     filter: false,
-    selectableRowsOnClick: false,
+    selectableRowsOnClick: true,
+    onRowsSelect: (selResource, allRows) => { setResource(selResource[0].dataIndex); setSelected(allRows.map(row => row.dataIndex)) },
+    rowsSelected: selected,
     rowsPerPage: 5,
     responsive: 'scrollFullHeight'
   }
@@ -119,27 +130,23 @@ export default function App () {
         <Grid container>
           <Grid item xs={12} className={classes.table}>
             <MUIDataTable
-              title='Members:'
+              title='Example custom resources:'
               data={dataset}
               columns={columns}
               options={options}
             />
+            <Grid item xs className={classes.btnDiv}>
+              <Fab variant='extended' color='primary' aria-label='add' className={classes.fab} onClick={submit}>
+                <NavigationIcon className={classes.extendedIcon} />
+                Submit
+              </Fab>
+            </Grid>
           </Grid>
         </Grid>
       </div>
       {/* <Box mt={8}>
         <Copyright />
       </Box> */}
-      <Link
-        to={{
-          pathname: '/',
-          search: document.location.search
-        }}
-      >
-        <Fab color='primary' aria-label='home' className={classes.home}>
-          <HomeIcon />
-        </Fab>
-      </Link>
     </Container>
   )
 }

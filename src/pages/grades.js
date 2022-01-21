@@ -2,18 +2,18 @@ import React, { useState } from 'react'
 import {
   Link
 } from 'react-router-dom'
-import Typography from '@material-ui/core/Typography'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Grid from '@material-ui/core/Grid'
+import Typography from '@mui/material/Typography'
+import CssBaseline from '@mui/material/CssBaseline'
+import Grid from '@mui/material/Grid'
 import Image from 'material-ui-image'
-import { makeStyles } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
-import Slider from '@material-ui/core/Slider'
-import Input from '@material-ui/core/Input'
+import makeStyles from '@mui/styles/makeStyles';
+import Container from '@mui/material/Container'
+import Slider from '@mui/material/Slider'
+import Input from '@mui/material/Input'
 
-import Fab from '@material-ui/core/Fab'
-import NavigationIcon from '@material-ui/icons/Navigation'
-import HomeIcon from '@material-ui/icons/Home'
+import Fab from '@mui/material/Fab'
+import NavigationIcon from '@mui/icons-material/Navigation'
+import HomeIcon from '@mui/icons-material/Home'
 import ky from 'ky'
 
 import { useSnackbar } from 'notistack'
